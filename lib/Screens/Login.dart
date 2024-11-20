@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:wellio/Screens/Home.dart';
 import 'package:wellio/Screens/Register.dart';
+import 'package:wellio/Screens/snack_bar.dart';
 import 'package:wellio/Widgets/TextField.dart';
 import 'package:wellio/Widgets/buttom.dart';
+
+import '../Services/Authentication.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -11,10 +15,41 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController gmailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
+
+  void despose() {
+    super.dispose();
+    gmailController.dispose();
+    passwordController.dispose();
+  }
+
+  void loginUsers() async {
+    final res = await AuthServices().loginUser(
+        gmail: gmailController.text, password: passwordController.text);
+// if login is success, user has been created and navigate to the next screen
+// otherwise show the error message
+
+    if (res == "success") {
+      setState(() {
+        isLoading = true;
+      });
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+      showSnackBar(context, res);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true, // Ensures the layout adapts when the keyboard opens
+      resizeToAvoidBottomInset:
+          true, // Ensures the layout adapts when the keyboard opens
       body: Stack(
         children: [
           // Background gradient
@@ -23,9 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
             width: double.infinity,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  Color(0xff452C63),
-                  Color(0xff3D2C8D)],
+                colors: [Color(0xff452C63), Color(0xff3D2C8D)],
               ),
             ),
             child: const Padding(
@@ -56,17 +89,20 @@ class _LoginScreenState extends State<LoginScreen> {
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 18.0),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min, // Adjust to the content height
+                  mainAxisSize:
+                      MainAxisSize.min, // Adjust to the content height
                   children: [
                     const SizedBox(height: 50),
                     // Email field
-                    const CustomerTextField(
+                    CustomerTextField(
+                      controller: gmailController,
                       label: 'Gmail',
                       icon: Icons.check,
                     ),
                     const SizedBox(height: 20),
                     // Password field
-                    const CustomerTextField(
+                    CustomerTextField(
+                      controller: passwordController,
                       label: 'Password',
                       icon: Icons.visibility_off,
                       obscureText: true,
@@ -88,10 +124,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     CustomButton(
                       text: 'SIGN IN ',
-                      onTap: () {  },
-                    )
-
-                     ,SizedBox(height: 30),
+                      onTap: loginUsers,
+                    ),
+                    SizedBox(height: 30),
 
                     Align(
                       alignment: Alignment.center,
@@ -111,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: GestureDetector(
                               onTap: () {
                                 // Navigate to the RegisterPage
-                               Navigator.push(
+                                Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => const RegScreen(),

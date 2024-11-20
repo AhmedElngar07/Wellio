@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "685423286716",
+    "project_id": "wellio-13758",
+    "storage_bucket": "wellio-13758.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:685423286716:android:38d743ebd3da2a7dd973b9",
+        "android_client_info": {
+          "package_name": "com.example.wellio"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5iK8Ry_XxDcz_71pgOzX4hoUTGZM5Axg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

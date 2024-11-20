@@ -31,7 +31,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Image.asset(
                 'assets/Logo.png',
-                height: MediaQuery.of(context).size.height * 0.25, // 25% of screen height
+                height: MediaQuery.of(context).size.height *
+                    0.25, // 25% of screen height
                 fit: BoxFit.contain,
               ),
             ),
