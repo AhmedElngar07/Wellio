@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:wellio/Screens/Home.dart';
 import 'package:wellio/Screens/Login.dart';
-import 'package:wellio/Screens/snack_bar.dart';
 import 'package:wellio/Services/Authentication.dart';
+import 'package:wellio/Services/snack_bar.dart';
 import 'package:wellio/Widgets/TextField.dart';
 import 'package:wellio/Widgets/buttom.dart';
 
@@ -37,7 +36,7 @@ class _RegScreenState extends State<RegScreen> {
         isLoading = true;
       });
       Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
+          .pushReplacement(MaterialPageRoute(builder: (context) => LoginScreen()));
     } else {
       setState(() {
         isLoading = false;
