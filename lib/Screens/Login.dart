@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:wellio/Screens/Home.dart';
 import 'package:wellio/Screens/Register.dart';
-import 'package:wellio/Screens/snack_bar.dart';
 import 'package:wellio/Widgets/TextField.dart';
 import 'package:wellio/Widgets/buttom.dart';
-
 import '../Services/Authentication.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -27,7 +26,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void loginUsers() async {
     final res = await AuthServices().loginUser(
-        gmail: gmailController.text, password: passwordController.text);
+        gmail: gmailController.text,
+        password: passwordController.text
+    );
 // if login is success, user has been created and navigate to the next screen
 // otherwise show the error message
 
@@ -38,10 +39,12 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
     } else {
-      setState(() {
-        isLoading = false;
-      });
-      showSnackBar(context, res);
+      if (
+      gmailController.text.isEmpty ||
+          passwordController.text.isEmpty) {
+        EasyLoading.showError('All Field is Required ');
+        return; // Stop execution if validation fails
+      }
     }
   }
 

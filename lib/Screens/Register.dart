@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:wellio/Screens/Login.dart';
 import 'package:wellio/Services/Authentication.dart';
-import 'package:wellio/Services/snack_bar.dart';
 import 'package:wellio/Widgets/TextField.dart';
 import 'package:wellio/Widgets/buttom.dart';
 
@@ -26,24 +26,36 @@ class _RegScreenState extends State<RegScreen> {
   }
 
   void signUpUser() async {
+    // Check if any fields are null or empty
+    if (fullnameController.text.isEmpty ||
+        gmailController.text.isEmpty ||
+        passwordController.text.isEmpty) {
+      EasyLoading.showError('All Field is Required ');
+      return; // Stop execution if validation fails
+    }
+
     final res = await AuthServices().signUpUser(
-        name: fullnameController.text,
-        gmail: gmailController.text,
-        password: passwordController.text);
+      name: fullnameController.text,
+      gmail: gmailController.text,
+      password: passwordController.text,
+    );
 
     if (res == "success") {
       setState(() {
         isLoading = true;
       });
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => LoginScreen()));
+      EasyLoading.showSuccess("Register Success!");
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
     } else {
       setState(() {
         isLoading = false;
       });
-      showSnackBar(context, res);
+      EasyLoading.showError('This email already exists!');
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
