@@ -34,9 +34,11 @@ class MyApp extends StatelessWidget {
       home: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
+            //if the user log in already and restart the app will open on home page
             if (snapshot.hasData) {
               return Home();
             } else {
+              //otherwise go welcome page
               return WelcomeScreen();
             }
           }),

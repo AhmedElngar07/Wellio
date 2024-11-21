@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wellio/Screens/Home.dart';
 import 'package:wellio/Screens/Register.dart';
-import 'package:wellio/Screens/snack_bar.dart';
+import 'package:wellio/Services/snack_bar.dart';
 import 'package:wellio/Widgets/TextField.dart';
 import 'package:wellio/Widgets/buttom.dart';
 
