@@ -5,52 +5,84 @@ class AuthServices {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<String> signUpUser(
-      {required String name,
-      required String gmail,
-      required String password}) async {
+  Future<String> signUpUser({
+    required String name,
+    required String gmail,
+    required String password,
+  }) async {
     String res = "Some error occurred";
 
     try {
-      if (name.isNotEmpty || gmail.isNotEmpty || password.isNotEmpty) {
+      if (name.isNotEmpty && gmail.isNotEmpty && password.isNotEmpty) {
         // Creating the user with the provided email and password
-        //for register user in firebase auth with email and password
         UserCredential credential = await _auth.createUserWithEmailAndPassword(
-            email: gmail, password: password);
+          email: gmail,
+          password: password,
+        );
 
         // Saving additional user info in Firestore
-        await _firestore.collection("users").doc(credential.user!.uid).set(
-            {"FullName": name, "Email": gmail, "uid": credential.user!.uid});
+        await _firestore.collection("users").doc(credential.user!.uid).set({
+          "FullName": name,
+          "Email": gmail,
+          "uid": credential.user!.uid,
+        });
 
         res = "success";
+      } else {
+        res = "All fields are required.";
+      }
+    } on FirebaseAuthException catch (e) {
+      print('FirebaseAuthException Code: ${e.code}');
+      print('FirebaseAuthException Message: ${e.message}');
+
+      if (e.code == 'email-already-in-use') {
+        res = "This email is already registered.";
+      } else if (e.code == 'invalid-email') {
+        res = "The email address is not valid.";
+      } else if (e.code == 'weak-password') {
+        res = "The password is too weak.";
+      } else {
+        res = "An unexpected error occurred: ${e.message}";
       }
     } catch (e) {
-      // Print and capture the error message
-      print("Error: ${e.toString()}");
-      res = e.toString(); // Return the error message
+      print("General Error: ${e.toString()}");
+      res = "An unexpected error occurred.";
     }
 
-    return res; // Return the result (either success or error message)
+    return res;
   }
 
-//for LOgin screen
+//for Login screen
   Future<String> loginUser(
       {required String gmail, required String password}) async {
     String res = "Some error occurred";
 
     try {
-      if (gmail.isNotEmpty || password.isNotEmpty) {
-        //login user with email and password
+      if (gmail.isNotEmpty && password.isNotEmpty) {
+        // Attempt to sign in with email and password
         await _auth.signInWithEmailAndPassword(
             email: gmail, password: password);
         res = "success";
       } else {
-        res = "please enter all field";
+        res = "Please enter all fields.";
+      }
+    } on FirebaseAuthException catch (e) {
+      // Handle specific FirebaseAuthException errors
+      if (e.code == 'user-not-found') {
+        res = "No user found for that email.";
+      } else if (e.code == 'wrong-password') {
+        res = "Incorrect password.";
+      } else if (e.code == 'invalid-email') {
+        res = "The email address is not valid.";
+      } else {
+        res = "An unexpected error occurred: ${e.message}";
       }
     } catch (e) {
-      print("Error: ${e.toString()}");
-      res = e.toString();
+      // Catch any general exceptions
+      print("General Error: ${e.toString()}");
+      res = "An unexpected error occurred.";
     }
+
     return res;
   }
 

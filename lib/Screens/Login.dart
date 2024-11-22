@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:wellio/Screens/Home.dart';
 import 'package:wellio/Screens/Register.dart';
-import 'package:wellio/Services/snack_bar.dart';
+import 'package:wellio/Widgets/ForegetPassword.dart';
 import 'package:wellio/Widgets/TextField.dart';
 import 'package:wellio/Widgets/buttom.dart';
-
 import '../Services/Authentication.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -26,22 +26,31 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void loginUsers() async {
+    if (gmailController.text.isEmpty || passwordController.text.isEmpty) {
+      EasyLoading.showError('All fields are required.');
+      return; // Stop execution if validation fails
+    }
+
+    setState(() {
+      isLoading = true; // Show loading indicator
+    });
+
     final res = await AuthServices().loginUser(
-        gmail: gmailController.text, password: passwordController.text);
-// if login is success, user has been created and navigate to the next screen
-// otherwise show the error message
+      gmail: gmailController.text.trim(),
+      password: passwordController.text.trim(),
+    );
+
+    setState(() {
+      isLoading = false; // Hide loading indicator
+    });
 
     if (res == "success") {
-      setState(() {
-        isLoading = true;
-      });
+      EasyLoading.showSuccess("Login successful!");
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
     } else {
-      setState(() {
-        isLoading = false;
-      });
-      showSnackBar(context, res);
+      // Show the specific error message returned from loginUser
+      EasyLoading.showError(res);
     }
   }
 
@@ -111,14 +120,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     // Forgot Password link
                     const Align(
                       alignment: Alignment.centerRight,
-                      child: Text(
-                        'Forgot Password?',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 17,
-                          color: Color(0xff281537),
-                        ),
-                      ),
+                      child: ForgetPassword(),
+
+                      // Text(
+                      //   'Forgot Password?',
+                      //   style: TextStyle(
+                      //     fontWeight: FontWeight.bold,
+                      //     fontSize: 17,
+                      //     color: Color(0xff281537),
+                      //   ),
+                      // ),
                     ),
                     const SizedBox(height: 40),
 
