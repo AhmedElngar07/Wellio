@@ -53,8 +53,8 @@ class _SplashscreenState extends State<Splashscreen>
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(0xff452C63),
-              Color(0xff3D2C8D),
+              Color(0xff5b457c),
+              Color(0xff301998),
             ],
           ),
         ),
