@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wellio/Screens/Login.dart';
 import 'package:wellio/Services/Authentication.dart';
+import 'package:wellio/Widgets/GeminiChatBot.dart';
 import 'package:wellio/Widgets/buttom.dart';
 
 class Home extends StatelessWidget {
@@ -26,7 +27,14 @@ class Home extends StatelessWidget {
                   await AuthServices().signOut();
                   Navigator.of(context).pushReplacement(
                       MaterialPageRoute(builder: (context) => LoginScreen()));
-                })
+                }),
+            SizedBox(height: 10),
+            CustomButton(
+                text: " chatbot",
+                onTap: () {
+                  Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context) => Geminichatbot()));
+                }),
           ],
         ),
       ),
