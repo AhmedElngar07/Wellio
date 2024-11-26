@@ -28,7 +28,7 @@ class Home extends StatelessWidget {
                   Navigator.of(context).pushReplacement(
                       MaterialPageRoute(builder: (context) => LoginScreen()));
                 }),
-            SizedBox(height: 10),
+            const SizedBox(height: 20),
             CustomButton(
                 text: " chatbot",
                 onTap: () {

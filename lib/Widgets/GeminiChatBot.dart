@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:intl/intl.dart';
+import 'package:wellio/Screens/Home.dart';
 import 'package:wellio/Widgets/model.dart';
 
 class Geminichatbot extends StatefulWidget {
@@ -47,59 +48,121 @@ class _GeminichatbotState extends State<Geminichatbot> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.blue,
-      appBar: AppBar(
-        elevation: 3,
-        backgroundColor: Colors.blue,
-        title: Text("WellioBot"),
+    return Container(
+      height: double.infinity,
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            // Color(0xff1c1c1e),
+            // Color(0xff464649),
+            Color(0xff5b457c),
+            Color(0xff301998),
+
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-              child: ListView.builder(
-                  itemCount: prompt.length,
-                  itemBuilder: (context, index) {
-                    final message = prompt[index];
-                    return UserPrompt(
+      child: Scaffold(
+        // Ensure the background remains transparent
+        backgroundColor: Colors.transparent, // Ensures gradient remains visible
+        appBar: AppBar(
+          backgroundColor: const Color(0xff5b457c),
+          shadowColor: Colors.black.withOpacity(0.7), // Add shadow to AppBar
+          elevation: 5, // Adjust the shadow intensity
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Home(),
+                ),
+              );
+            },
+          ),
+          title: const Text(
+            "WellioBot",
+            style: TextStyle(
+              color: Colors.white, // Use a contrasting color
+              fontSize: 25,
+            ),
+          ),
+        ),
+        body: Column(
+          children: [
+            SizedBox(height: 20), // Adds space below the AppBar
+            Expanded(
+              child:
+              ListView.builder(
+                itemCount: prompt.length,
+                shrinkWrap: true, // Ensures the ListView doesn't take unnecessary space
+                physics: BouncingScrollPhysics(), // Adds smooth scrolling
+                itemBuilder: (context, index) {
+                  final message = prompt[index];
+                  return Align(
+                    alignment: message.isPrompt
+                    // Align based on sender
+                        ? Alignment.centerRight
+                        : Alignment.centerLeft,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        // Adjust width
+                        // maxWidth: MediaQuery.of(context).size.width * 0.40,
+                      ),
+
+                      child: UserPrompt(
                         isPrompt: message.isPrompt,
                         message: message.message,
-                        date: DateFormat('hh:mm a').format(message.time));
-                  })),
-          Padding(
-            padding: EdgeInsets.all(25),
-            child: Row(
-              children: [
-                Expanded(
+                        date: DateFormat('hh:mm a').format(message.time),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(25),
+              child: Row(
+                children: [
+                  Expanded(
                     flex: 20,
                     child: TextField(
                       controller: promptController,
-                      style: TextStyle(color: Colors.black, fontSize: 18),
+                      style: TextStyle(color: Colors.white, fontSize: 18),
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20)),
-                        hintText: "Enter the Prompt",
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        hintText: "Ask a question",
+                        hintStyle: TextStyle(color: Colors.white),
                       ),
-                    )),
-                Spacer(),
-                GestureDetector(
-                  onTap: () {
-                    sendMessage();
-                  },
-                  child: CircleAvatar(
-                    radius: 29,
-                    backgroundColor: Colors.green,
-                    child: Icon(
-                      Icons.send,
-                      color: Colors.white,
-                      size: 32,
                     ),
                   ),
-                )
-              ],
+                  Spacer(),
+                  GestureDetector(
+                    onTap: () {
+                      sendMessage();
+                    },
+                    child: CircleAvatar(
+                      radius: 29,
+                      backgroundColor: Color(0xF9694AFF),
+                      child: Icon(
+                        Icons.send,
+                        color: Colors.white,
+                        size: 32,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          )
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -115,7 +178,7 @@ class _GeminichatbotState extends State<Geminichatbot> {
       margin: EdgeInsets.symmetric(vertical: 1)
           .copyWith(left: isPrompt ? 80 : 15, right: isPrompt ? 15 : 80),
       decoration: BoxDecoration(
-        color: isPrompt ? Colors.green : Colors.grey,
+        color: isPrompt ? Color(0xF9694AFF) : Color(0x882E2E3D),
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
@@ -132,7 +195,7 @@ class _GeminichatbotState extends State<Geminichatbot> {
             style: TextStyle(
               fontWeight: isPrompt ? FontWeight.bold : FontWeight.normal,
               fontSize: 18,
-              color: isPrompt ? Colors.white : Colors.black,
+              color: isPrompt ? Colors.white : Colors.white,
             ),
           ),
 
@@ -140,8 +203,8 @@ class _GeminichatbotState extends State<Geminichatbot> {
 
           Text(date,
               style: TextStyle(
-                fontSize: 14,
-                color: isPrompt ? Colors.white : Colors.black,
+                fontSize: 13,
+                color: isPrompt ? Colors.white : Colors.white,
               ))
         ],
       ),
