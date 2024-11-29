@@ -20,8 +20,7 @@ class _SkinDiagnosisChatBotState extends State<SkinDiagnosisChatBot> {
   final ImagePicker _picker = ImagePicker();
   File? selectedImage;
   final TextEditingController promptController = TextEditingController();
-  static const apiKey =
-      "AIzaSyD_q_DeFBAarzG4uHzHt7kAf2DOti0vmLw"; // Replace with your actual API key
+  static const apiKey = "AIzaSyD_q_DeFBAarzG4uHzHt7kAf2DOti0vmLw";
   final model = GenerativeModel(model: "gemini-pro", apiKey: apiKey);
 
   final List<ModelMessage> prompt = [];

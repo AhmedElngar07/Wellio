@@ -93,16 +93,6 @@ class Home extends StatelessWidget {
                 // Buttons for navigating to different screens
                 Column(
                   children: [
-                    CustomButton(
-                      text: "Chatbot",
-                      onTap: () {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  Geminichatbot(userName: userName)),
-                        );
-                      },
-                    ),
                     const SizedBox(height: 20),
                     CustomButton(
                       text: "Image Model",
