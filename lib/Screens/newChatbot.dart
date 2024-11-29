@@ -192,7 +192,7 @@ class _SkinDiagnosisChatBotState extends State<SkinDiagnosisChatBot> {
                     Image.asset('assets/Logo.png', width: 150, height: 150),
                     SizedBox(height: 20),
                     Text(
-                      "Hello... I'm here to help!",
+                      "Starting new session!",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 24,

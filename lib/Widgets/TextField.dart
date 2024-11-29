@@ -11,7 +11,8 @@ class CustomerTextField extends StatelessWidget {
     required this.label,
     required this.icon,
     this.obscureText = false,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,14 +20,13 @@ class CustomerTextField extends StatelessWidget {
       controller: controller,
       obscureText: obscureText,
       decoration: InputDecoration(
-        suffixIcon: Icon(icon, color: Colors.grey),
-        label: Text(
-          label,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Color(0xff452C63),
-          ),
+        labelText: label,
+        labelStyle: const TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Color(0xff452C63),
         ),
+        suffixIcon: Icon(icon, color: Colors.grey),
+
       ),
     );
   }

@@ -46,6 +46,8 @@ dependencies:
   tflite_v2: ^1.0.0
   image_picker: ^1.1.2
   flutter_image_compress: ^2.3.0
+  animated_text_kit: ^4.2.2
+  loader_overlay: ^4.0.3
 
 
 dev_dependencies:

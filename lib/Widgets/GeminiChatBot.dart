@@ -67,11 +67,14 @@ class _GeminichatbotState extends State<Geminichatbot> {
       ),
       child: Scaffold(
         // Ensure the background remains transparent
-        backgroundColor: Colors.transparent, // Ensures gradient remains visible
+        // Ensures gradient remains visible
+        backgroundColor: Colors.transparent,
         appBar: AppBar(
           backgroundColor: const Color(0xff5b457c),
-          shadowColor: Colors.black.withOpacity(0.7), // Add shadow to AppBar
-          elevation: 5, // Adjust the shadow intensity
+          // Add shadow to AppBar
+          shadowColor: Colors.black.withOpacity(0.7),
+          // Adjust the shadow intensity
+          elevation: 5,
           leading: IconButton(
             icon: const Icon(
               Icons.arrow_back,
@@ -89,14 +92,14 @@ class _GeminichatbotState extends State<Geminichatbot> {
           title: const Text(
             "WellioBot",
             style: TextStyle(
-              color: Colors.white, // Use a contrasting color
+              color: Colors.white,
               fontSize: 25,
             ),
           ),
         ),
         body: Column(
           children: [
-            SizedBox(height: 20), // Adds space below the AppBar
+            SizedBox(height: 20),
             Expanded(
               child: ListView.builder(
                 itemCount: prompt.length,
@@ -139,25 +142,25 @@ class _GeminichatbotState extends State<Geminichatbot> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         hintText: "Ask a question",
-                        hintStyle: TextStyle(color: Colors.white),
+                        hintStyle: TextStyle(color: Colors.white54),
                       ),
                     ),
                   ),
-                  Spacer(),
-                  GestureDetector(
-                    onTap: () {
-                      sendMessage();
-                    },
-                    child: CircleAvatar(
-                      radius: 29,
-                      backgroundColor: Color(0xF9694AFF),
-                      child: Icon(
+                  SizedBox(width: 10),
+                  CircleAvatar(
+                    radius: 29,
+                    backgroundColor: const Color(0xF9694AFF),
+                    child: IconButton(
+                      icon: const Icon(
                         Icons.send,
                         color: Colors.white,
-                        size: 32,
+                        size: 28,
                       ),
+                      onPressed: sendMessage,
                     ),
                   ),
+                  const SizedBox(width: 10),
+                  _mediaMessageButton(),
                 ],
               ),
             ),
@@ -173,7 +176,6 @@ class _GeminichatbotState extends State<Geminichatbot> {
     required String date,
   }) {
     return Container(
-      width: double.infinity,
       padding: EdgeInsets.all(15),
       margin: EdgeInsets.symmetric(vertical: 1)
           .copyWith(left: isPrompt ? 80 : 15, right: isPrompt ? 15 : 80),
@@ -207,6 +209,21 @@ class _GeminichatbotState extends State<Geminichatbot> {
                 color: isPrompt ? Colors.white : Colors.white,
               ))
         ],
+      ),
+    );
+  }
+
+  Widget _mediaMessageButton() {
+    return CircleAvatar(
+      radius: 29,
+      backgroundColor: const Color(0xF9694AFF),
+      child: IconButton(
+        icon: const Icon(
+          Icons.image,
+          color: Colors.white,
+          size: 28,
+        ),
+        onPressed: sendMessage,
       ),
     );
   }
