@@ -5,7 +5,9 @@ import 'package:wellio/Screens/Home.dart';
 import 'package:wellio/Widgets/model.dart';
 
 class Geminichatbot extends StatefulWidget {
-  const Geminichatbot({super.key});
+  final String userName;
+
+  const Geminichatbot({super.key, required this.userName});
 
   @override
   State<Geminichatbot> createState() => _GeminichatbotState();
@@ -58,7 +60,6 @@ class _GeminichatbotState extends State<Geminichatbot> {
             // Color(0xff464649),
             Color(0xff5b457c),
             Color(0xff301998),
-
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -80,7 +81,7 @@ class _GeminichatbotState extends State<Geminichatbot> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const Home(),
+                  builder: (context) => Home(userName: widget.userName),
                 ),
               );
             },
@@ -97,24 +98,23 @@ class _GeminichatbotState extends State<Geminichatbot> {
           children: [
             SizedBox(height: 20), // Adds space below the AppBar
             Expanded(
-              child:
-              ListView.builder(
+              child: ListView.builder(
                 itemCount: prompt.length,
-                shrinkWrap: true, // Ensures the ListView doesn't take unnecessary space
+                shrinkWrap:
+                    true, // Ensures the ListView doesn't take unnecessary space
                 physics: BouncingScrollPhysics(), // Adds smooth scrolling
                 itemBuilder: (context, index) {
                   final message = prompt[index];
                   return Align(
                     alignment: message.isPrompt
-                    // Align based on sender
+                        // Align based on sender
                         ? Alignment.centerRight
                         : Alignment.centerLeft,
                     child: ConstrainedBox(
                       constraints: BoxConstraints(
-                        // Adjust width
-                        // maxWidth: MediaQuery.of(context).size.width * 0.40,
-                      ),
-
+                          // Adjust width
+                          // maxWidth: MediaQuery.of(context).size.width * 0.40,
+                          ),
                       child: UserPrompt(
                         isPrompt: message.isPrompt,
                         message: message.message,

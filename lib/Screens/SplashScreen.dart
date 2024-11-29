@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:wellio/Screens/Welcome.dart';
@@ -14,33 +15,37 @@ class Splashscreen extends StatefulWidget {
 class _SplashscreenState extends State<Splashscreen>
     with SingleTickerProviderStateMixin {
   @override
-
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
-    // Navigate to the appropriate screen based on Firebase auth state after the splash screen delay
-    Future.delayed(const Duration(seconds: 5), () {
-      // Check the current authentication state
-      FirebaseAuth.instance.authStateChanges().listen((User? user) {
-        if (user != null) {
-          // If the user is logged in, navigate to Home
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const Home()),
-          );
-        } else {
-          // If the user is not logged in, navigate to WelcomeScreen
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const WelcomeScreen()),
-          );
-        }
-      });
+    Future.delayed(const Duration(seconds: 5), () async {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        // Fetch user data (e.g., from Firestore)
+        final userData = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+
+        String userName = userData['FullName'] ?? 'User';
+
+        // Navigate to Home and pass the userName
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => Home(userName: userName)),
+        );
+      } else {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const WelcomeScreen()),
+        );
+      }
     });
   }
 
   @override
   void dispose() {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: SystemUiOverlay.values);
     super.dispose();
   }
 
@@ -63,7 +68,8 @@ class _SplashscreenState extends State<Splashscreen>
           children: [
             Image.asset(
               'assets/Logo.png',
-              height: MediaQuery.of(context).size.height * 0.25, // 25% of screen height
+              height: MediaQuery.of(context).size.height *
+                  0.25, // 25% of screen height
               fit: BoxFit.contain,
             ),
             const SizedBox(height: 20),

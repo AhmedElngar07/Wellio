@@ -91,4 +91,14 @@ class AuthServices {
   Future<void> signOut() async {
     await _auth.signOut();
   }
+
+  Future<Map<String, dynamic>?> getUserData() async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      DocumentSnapshot snapshot =
+          await _firestore.collection('users').doc(user.uid).get();
+      return snapshot.data() as Map<String, dynamic>?;
+    }
+    return null;
+  }
 }

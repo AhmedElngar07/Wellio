@@ -28,11 +28,11 @@ class _LoginScreenState extends State<LoginScreen> {
   void loginUsers() async {
     if (gmailController.text.isEmpty || passwordController.text.isEmpty) {
       EasyLoading.showError('All fields are required.');
-      return; // Stop execution if validation fails
+      return;
     }
 
     setState(() {
-      isLoading = true; // Show loading indicator
+      isLoading = true;
     });
 
     final res = await AuthServices().loginUser(
@@ -40,16 +40,28 @@ class _LoginScreenState extends State<LoginScreen> {
       password: passwordController.text.trim(),
     );
 
-    setState(() {
-      isLoading = false; // Hide loading indicator
-    });
-
     if (res == "success") {
-      EasyLoading.showSuccess("Login successful!");
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
+      // Fetch user data after successful login
+      final userData = await AuthServices().getUserData();
+
+      setState(() {
+        isLoading = false; // Hide loading indicator
+      });
+
+      if (userData != null) {
+        String userName = userData['FullName'] ?? 'User';
+
+        EasyLoading.showSuccess("Login successful!");
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => Home(userName: userName)),
+        );
+      } else {
+        EasyLoading.showError("Failed to retrieve user data.");
+      }
     } else {
-      // Show the specific error message returned from loginUser
+      setState(() {
+        isLoading = false;
+      });
       EasyLoading.showError(res);
     }
   }
