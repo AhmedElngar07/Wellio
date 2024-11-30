@@ -6,11 +6,13 @@ import 'package:wellio/Screens/newChatbot.dart';
 import 'package:wellio/Services/Authentication.dart';
 import 'package:wellio/Widgets/GeminiChatBot.dart';
 import 'package:wellio/Widgets/buttom.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Home extends StatelessWidget {
   final String userName;
+  final String userID;
 
-  const Home({super.key, required this.userName});
+  const Home({super.key, required this.userName, required this.userID});
 
   @override
   Widget build(BuildContext context) {
@@ -95,22 +97,31 @@ class Home extends StatelessWidget {
                   children: [
                     const SizedBox(height: 20),
                     CustomButton(
-                      text: "Image Model",
-                      onTap: () {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                              builder: (context) => ObjectDetectionScreen()),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    CustomButton(
                       text: "Diagnostic Chatbot",
-                      onTap: () {
+                      onTap: () async {
+                        // Generate session ID
+                        String sessionID =
+                            DateTime.now().millisecondsSinceEpoch.toString();
+
+                        // Create the session document
+                        await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(userID)
+                            .collection('chats')
+                            .doc(sessionID)
+                            .set({
+                          'createdAt': FieldValue.serverTimestamp(),
+                          'sessionID': sessionID,
+                          'status': 'active',
+                        });
+
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  SkinDiagnosisChatBot(userName: userName)),
+                            builder: (context) => SkinDiagnosisChatBot(
+                                userName: userName,
+                                userID: userID,
+                                sessionID: sessionID),
+                          ),
                         );
                       },
                     ),
@@ -120,8 +131,8 @@ class Home extends StatelessWidget {
                       onTap: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) =>
-                                Geminichatbot(userName: userName),
+                            builder: (context) => Geminichatbot(
+                                userName: userName, userID: userID),
                           ),
                         );
                       },

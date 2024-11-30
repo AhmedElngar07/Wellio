@@ -29,10 +29,11 @@ class _SplashscreenState extends State<Splashscreen>
             .get();
 
         String userName = userData['FullName'] ?? 'User';
-
+        String userID = userData["uid"];
         // Navigate to Home and pass the userName
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => Home(userName: userName)),
+          MaterialPageRoute(
+              builder: (_) => Home(userName: userName, userID: userID)),
         );
       } else {
         Navigator.of(context).pushReplacement(

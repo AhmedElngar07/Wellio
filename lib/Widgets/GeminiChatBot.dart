@@ -6,8 +6,9 @@ import 'package:wellio/Widgets/model.dart';
 
 class Geminichatbot extends StatefulWidget {
   final String userName;
-
-  const Geminichatbot({super.key, required this.userName});
+  final String userID;
+  const Geminichatbot(
+      {super.key, required this.userName, required this.userID});
 
   @override
   State<Geminichatbot> createState() => _GeminichatbotState();
@@ -84,7 +85,10 @@ class _GeminichatbotState extends State<Geminichatbot> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Home(userName: widget.userName),
+                  builder: (context) => Home(
+                    userName: widget.userName,
+                    userID: widget.userID,
+                  ),
                 ),
               );
             },

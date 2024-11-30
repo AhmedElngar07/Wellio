@@ -50,13 +50,14 @@ class _LoginScreenState extends State<LoginScreen> {
       final userData = await AuthServices().getUserData();
       if (userData != null) {
         String userName = userData['FullName'] ?? 'User';
+        String userID = userData['uid'];
         setState(() {
           isLoading = false; // Hide loading indicator
         });
 
         EasyLoading.showSuccess("Login successful!");
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => Home(userName: userName)));
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => Home(userName: userName, userID: userID)));
       } else {
         EasyLoading.showError("Failed to retrieve user data.");
         setState(() {

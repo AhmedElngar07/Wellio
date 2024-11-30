@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -9,7 +11,13 @@ import 'package:wellio/Widgets/model.dart';
 
 class SkinDiagnosisChatBot extends StatefulWidget {
   final String userName;
-  const SkinDiagnosisChatBot({Key? key, required this.userName})
+  final String userID;
+  final String sessionID;
+  const SkinDiagnosisChatBot(
+      {Key? key,
+      required this.userName,
+      required this.userID,
+      required this.sessionID})
       : super(key: key);
 
   @override
@@ -89,6 +97,10 @@ class _SkinDiagnosisChatBotState extends State<SkinDiagnosisChatBot> {
           ));
         });
 
+        // Save image path and diagnosis to Firestore
+        await saveChatMessage(image.path, diagnosis, image.path);
+
+        // Generate and store AI response
         await generateChatBotResponse(bestPrediction['label']);
       } else {
         setState(() {
@@ -98,6 +110,9 @@ class _SkinDiagnosisChatBotState extends State<SkinDiagnosisChatBot> {
             time: DateTime.now(),
           ));
         });
+
+        // Save failure message to Firestore
+        await saveChatMessage(image.path, "Unable to predict.", image.path);
       }
     } catch (e) {
       print("Error during image diagnosis: $e");
@@ -108,23 +123,42 @@ class _SkinDiagnosisChatBotState extends State<SkinDiagnosisChatBot> {
           time: DateTime.now(),
         ));
       });
+
+      await saveChatMessage(
+          image.path, "Error during image diagnosis.", image.path);
     }
   }
 
-  Future<void> generateChatBotResponse(String message) async {
-    final response = await model.generateContent([Content.text(message)]);
+  Future<void> generateChatBotResponse(String userMessage) async {
+    final String instruction =
+        "You are a professional dermatologist. Respond only with dermatological advice, diagnoses, or treatment recommendations. Avoid non-dermatology topics. If the question is irrelevant, respond with: 'Sorry, I can only answer dermatological questions.'";
+
+    final response = await model.generateContent(
+        [Content.text(instruction), Content.text(userMessage)]);
+
+    final botResponse =
+        response.text ?? "Sorry, I can only answer dermatological questions.";
+
+    // Check if the response contains the expected message for non-dermatological topics
+    final String restrictedResponse =
+        "Sorry, I can only answer dermatological questions.";
 
     setState(() {
       prompt.add(ModelMessage(
         isPrompt: false,
-        message: response.text ?? "No response available.",
+        message: botResponse.contains(restrictedResponse)
+            ? restrictedResponse
+            : botResponse,
         time: DateTime.now(),
       ));
     });
+
+    await saveChatMessage(userMessage, botResponse, null);
   }
 
-  void sendMessage() {
+  void sendMessage() async {
     final message = promptController.text.trim();
+
     if (message.isNotEmpty) {
       setState(() {
         prompt.add(ModelMessage(
@@ -134,8 +168,57 @@ class _SkinDiagnosisChatBotState extends State<SkinDiagnosisChatBot> {
         ));
       });
 
+      await saveChatMessage(message, '', null);
+
       promptController.clear();
-      generateChatBotResponse(message);
+
+      final String instruction =
+          "You are a professional dermatologist. Respond only with dermatological advice, diagnoses, or treatment recommendations. Avoid non-dermatology topics. If the question is irrelevant, respond with: 'Sorry, I can only answer dermatological questions.'";
+
+      final response = await model
+          .generateContent([Content.text(instruction), Content.text(message)]);
+
+      final String botResponse =
+          response.text ?? "Sorry, I can only answer dermatological questions.";
+
+      final String restrictedResponse =
+          "Sorry, I can only answer dermatological questions.";
+
+      setState(() {
+        prompt.add(ModelMessage(
+          isPrompt: false,
+          message: botResponse.contains(restrictedResponse)
+              ? restrictedResponse
+              : botResponse,
+          time: DateTime.now(),
+        ));
+      });
+
+      await saveChatMessage(message, botResponse, null);
+    }
+  }
+
+  // Store caht
+  Future<void> saveChatMessage(
+      String userMessage, String botResponse, String? imagePath) async {
+    try {
+      var sessionRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.userID)
+          .collection('chats')
+          .doc(widget.sessionID);
+
+      var message = {
+        'userMessage': userMessage,
+        'botResponse': botResponse,
+        'imagePath': imagePath ?? '',
+        'timestamp': FieldValue.serverTimestamp(),
+      };
+
+      await sessionRef.collection('chatlist').add(message);
+      print("Chat message saved under session successfully!");
+    } catch (e) {
+      print("Error saving chat message: $e");
     }
   }
 
@@ -169,7 +252,10 @@ class _SkinDiagnosisChatBotState extends State<SkinDiagnosisChatBot> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Home(userName: widget.userName),
+                  builder: (context) => Home(
+                    userName: widget.userName,
+                    userID: widget.userID,
+                  ),
                 ),
               );
             },
