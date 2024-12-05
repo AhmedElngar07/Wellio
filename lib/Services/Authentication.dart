@@ -73,7 +73,7 @@ class AuthServices {
       } else if (e.code == 'wrong-password') {
         res = "Incorrect password.";
       } else if (e.code == 'invalid-email') {
-        res = "The email address is not valid.";
+        res = "Invalid email address format.";
       } else {
         res = "An unexpected error occurred: ${e.message}";
       }

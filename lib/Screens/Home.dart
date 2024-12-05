@@ -42,10 +42,10 @@ class Home extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Welcome, $userName!", // Display the logged-in user's name
+                      "Hello, $userName!", // Display the logged-in user's name
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 40,
+                        fontSize: 30,
                         color: Colors.white,
                       ),
                     ),
