@@ -12,6 +12,9 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: Container(
         height: double.infinity,
@@ -26,33 +29,33 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         ),
         child: Column(
           children: [
-            const SizedBox(height: 100),
+            SizedBox(height: screenHeight * 0.1),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
               child: Image.asset(
                 'assets/Logo.png',
-                height: MediaQuery.of(context).size.height *
-                    0.25, // 25% of screen height
+                height: screenHeight * 0.25,
                 fit: BoxFit.contain,
               ),
             ),
-            const SizedBox(height: 40),
+            SizedBox(height: screenHeight * 0.05),
             const Text(
               'Wellio',
               style: TextStyle(
-                fontSize: 80,
+                fontSize: 60,
                 color: Colors.white,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 40),
+            SizedBox(height: screenHeight * 0.04),
             const Text(
               'Welcome Back',
               style: TextStyle(
-                fontSize: 30,
+                fontSize: 24,
                 color: Colors.white,
               ),
             ),
-            const SizedBox(height: 30),
+            SizedBox(height: screenHeight * 0.03),
             GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -61,8 +64,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 );
               },
               child: Container(
-                height: 53,
-                width: 320,
+                height: screenHeight * 0.07,
+                width: screenWidth * 0.8,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30),
                   border: Border.all(color: Colors.white),
@@ -71,7 +74,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   child: Text(
                     'SIGN IN',
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
@@ -79,7 +82,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 30),
+            SizedBox(height: screenHeight * 0.03),
             GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -88,8 +91,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 );
               },
               child: Container(
-                height: 53,
-                width: 320,
+                height: screenHeight * 0.07,
+                width: screenWidth * 0.8,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(30),
@@ -99,7 +102,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   child: Text(
                     'SIGN UP',
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),

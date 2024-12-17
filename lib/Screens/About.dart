@@ -1,23 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:wellio/Screens/Home.dart';
 import 'package:wellio/Screens/Welcome.dart';
+import 'package:wellio/Screens/newChatbot.dart';
 import 'package:wellio/Services/Authentication.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'About Us Page',
-      home: AboutUsPage(),
-    );
-  }
-}
-
 class AboutUsPage extends StatelessWidget {
+  final String userName;
+  final String userID;
+
+  // Constructor to pass the userName and userID
+  AboutUsPage({Key? key, required this.userName, required this.userID})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,9 +28,8 @@ class AboutUsPage extends StatelessWidget {
           child: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
-            iconTheme: IconThemeData(color: Colors.white)
-            , 
-            title: const Text('About Us', style:TextStyle(color: Colors.white) ) ,
+            iconTheme: IconThemeData(color: Colors.white),
+            title: const Text('About Us', style: TextStyle(color: Colors.white)),
           ),
         ),
       ),
@@ -46,7 +39,8 @@ class AboutUsPage extends StatelessWidget {
             Container(
               height: 100,
               width: double.infinity,
-              padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 35.0, bottom: 16.0),
+              padding: EdgeInsets.only(
+                  left: 16.0, right: 16.0, top: 35.0, bottom: 16.0),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [Color(0xff452C63), Color(0xff3D2C8D)],
@@ -71,7 +65,33 @@ class AboutUsPage extends StatelessWidget {
                     ),
                     title: Text('Chatbot'),
                     onTap: () {
-                      Navigator.pop(context);
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => SkinDiagnosisChatBot(
+                            userName: userName, // Pass the userName
+                            userID: userID,
+                            sessionID: '',     // Pass the userID
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Image.asset(
+                      'assets/about-us-icon.png',
+                      width: 24,
+                      height: 24,
+                    ),
+                    title: const Text('Home'),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => Home(
+                            userName: userName, // Pass the userName
+                            userID: userID,     // Pass the userID
+                          ),
+                        ),
+                      );
                     },
                   ),
                 ],
@@ -131,8 +151,8 @@ class AboutUsPage extends StatelessWidget {
                 SizedBox(height: 16),
                 Text(
                   'Welcome to our app! We are here to help you take control of your skin health. '
-                  'Our AI-powered app analyzes skin images to provide potential diagnoses and recommendations. '
-                  'It is a convenient and accessible way to get initial insights and decide if further medical attention is needed.',
+                      'Our AI-powered app analyzes skin images to provide potential diagnoses and recommendations. '
+                      'It is a convenient and accessible way to get initial insights and decide if further medical attention is needed.',
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.white,

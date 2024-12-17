@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:wellio/Screens/About.dart';
 import 'package:wellio/Screens/Login.dart';
 import 'package:wellio/Screens/newChatbot.dart';
 import 'package:wellio/Services/Authentication.dart';
 import 'package:wellio/Widgets/buttom.dart';
-
 
 class Home extends StatelessWidget {
   final String userName;
@@ -18,20 +18,133 @@ class Home extends StatelessWidget {
     final screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
+      // Add Drawer to Scaffold
+      drawer: Drawer(
+        child: Column(
+          children: [
+            Container(
+              height: 100,
+              width: double.infinity,
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 35.0),
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xff452C63), Color(0xff3D2C8D)],
+                ),
+              ),
+              child: const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Menu',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: ListView(
+                children: [
+                  ListTile(
+                    leading: Image.asset(
+                      'assets/robot.png',
+                      width: 24,
+                      height: 24,
+                    ),
+                    title: const Text('Chatbot'),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => SkinDiagnosisChatBot(
+                            userName: userName,
+                            userID: userID,
+                            sessionID: '',
+                          ),
+                        ),
+                      );
+                    },
+
+                  ),
+                  ListTile(
+                    leading: Image.asset(
+                      'assets/about-us-icon.png',
+                      width: 24,
+                      height: 24,
+                    ),
+                    title: const Text('About us'),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>AboutUsPage(
+                            userName: userName, // Pass the userName
+                            userID: userID, )
+                        ),
+                      );
+                    },
+
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xffFF4A6E),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  minimumSize: const Size(double.infinity, 50),
+                ),
+                onPressed: () async {
+                  try {
+                    await AuthServices().signOut();
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => const LoginScreen(),
+                      ),
+                    );
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Error logging out: $e')),
+                    );
+                  }
+                },
+                child: const Text(
+                  "Log Out",
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text('Home', style: TextStyle(color: Colors.white)),
+        iconTheme: const IconThemeData(color: Colors.white),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/Background.jpg'),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      ),
       body: Stack(
         children: [
-
           Container(
             height: screenSize.height,
             width: screenSize.width,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/111_n.jpg'),
                 fit: BoxFit.cover,
               ),
             ),
           ),
-
           SafeArea(
             child: SingleChildScrollView(
               child: Padding(
@@ -57,29 +170,28 @@ class Home extends StatelessWidget {
                             ),
                           ),
                         ),
-                        IconButton(
-                          onPressed: () async {
-                            await AuthServices().signOut();
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                builder: (context) => const LoginScreen(),
-                              ),
-                            );
-                          },
-                          icon: const Icon(Icons.exit_to_app, color: Colors.red),
-                          tooltip: 'Logout',
-                        ),
+                        // IconButton(
+                        //   onPressed: () async {
+                        //     await AuthServices().signOut();
+                        //     Navigator.of(context).pushReplacement(
+                        //       MaterialPageRoute(
+                        //         builder: (context) => const LoginScreen(),
+                        //       ),
+                        //     );
+                        //   },
+                        //   icon: const Icon(Icons.exit_to_app, color: Colors.red),
+                        //   tooltip: 'Logout',
+                        // ),
                       ],
                     ),
                     const SizedBox(height: 50),
-
-
-                    Center(
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: AnimatedTextKit(
                         animatedTexts: [
                           TypewriterAnimatedText(
                             'Welcome to WellioChat,\nWe Are Here to Help You :)',
-                            textAlign: TextAlign.center,
+                            textAlign: TextAlign.left,
                             textStyle: const TextStyle(
                               color: Colors.white70,
                               fontSize: 24.0,
@@ -100,8 +212,6 @@ class Home extends StatelessWidget {
               ),
             ),
           ),
-
-
           Positioned(
             bottom: 20,
             left: 16,
@@ -136,19 +246,6 @@ class Home extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 20),
-                // CustomButton(
-                //   text: "Get Started",
-                //   onTap: () {
-                //     Navigator.of(context).push(
-                //       MaterialPageRoute(
-                //         builder: (context) => Geminichatbot(
-                //           userName: userName,
-                //           userID: userID,
-                //         ),
-                //       ),
-                //     );
-                //   },
-                // ),
               ],
             ),
           ),

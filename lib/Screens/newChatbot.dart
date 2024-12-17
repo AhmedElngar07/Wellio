@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -388,18 +387,26 @@ class _SkinDiagnosisChatBotState extends State<SkinDiagnosisChatBot> {
                             ),
                           ),
                         ),
-                        IconButton(
+                        Spacer(),
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color(0xF9694AFF), // Your desired background color
+                        ),
+                        child: IconButton(
                           icon: const Icon(Icons.image),
                           onPressed: pickImage,
                           color: Colors.white,
+                          iconSize: 32, // Adjust the icon size if needed
                         ),
+                      ),
                         Spacer(),
                         GestureDetector(
                           onTap: () {
                             sendMessage();
                           },
                           child: CircleAvatar(
-                            radius: 29,
+                            radius: 26,
                             backgroundColor: Color(0xF9694AFF),
                             child: Icon(
                               Icons.send,
