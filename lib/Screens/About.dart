@@ -68,9 +68,9 @@ class AboutUsPage extends StatelessWidget {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => SkinDiagnosisChatBot(
-                            userName: userName, // Pass the userName
+                            userName: userName,
                             userID: userID,
-                            sessionID: '',     // Pass the userID
+                            sessionID: '',
                           ),
                         ),
                       );

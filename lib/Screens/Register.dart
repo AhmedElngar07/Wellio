@@ -104,7 +104,7 @@ class _RegScreenState extends State<RegScreen> {
                       // Full Name Field
                       CustomerTextField(
                         controller: fullnameController,
-                        label: 'Full Name',
+                        label: 'First Name',
                         icon: Icons.check,
                       ),
                       const SizedBox(height: 20),
