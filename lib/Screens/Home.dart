@@ -1,10 +1,13 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:wellio/Screens/About.dart';
-import 'package:wellio/Screens/Login.dart';
+import 'package:wellio/Screens/Welcome.dart';
 import 'package:wellio/Screens/newChatbot.dart';
 import 'package:wellio/Services/Authentication.dart';
+import 'package:wellio/Services/timeException.dart';
 import 'package:wellio/Widgets/buttom.dart';
 
 class Home extends StatelessWidget {
@@ -12,6 +15,53 @@ class Home extends StatelessWidget {
   final String userID;
 
   const Home({super.key, required this.userName, required this.userID});
+
+  Future<void> handleGetStarted(BuildContext context) async {
+    try {
+      // Show loading state
+      EasyLoading.show(status: 'Loading...');
+
+      String sessionID = DateTime.now().millisecondsSinceEpoch.toString();
+
+      // Attempt Firestore operation with timeout
+      await Future.any([
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(userID)
+            .collection('chats')
+            .doc(sessionID)
+            .set({
+          'createdAt': FieldValue.serverTimestamp(),
+          'sessionID': sessionID,
+          'status': 'active',
+        }),
+        Future.delayed(const Duration(seconds: 10))
+            .then((_) => throw TimeoutException('Operation timed out')),
+      ]);
+
+      EasyLoading.dismiss();
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => SkinDiagnosisChatBot(
+            userName: userName,
+            userID: userID,
+            sessionID: sessionID,
+          ),
+        ),
+      );
+    } catch (e) {
+      EasyLoading.dismiss();
+      await Future.delayed(const Duration(
+          milliseconds: 100)); // Small delay to ensure dismiss completes
+      EasyLoading.showError(
+        'Connection error. Please check your internet connection.',
+        duration: const Duration(seconds: 2),
+        maskType: EasyLoadingMaskType.black,
+        dismissOnTap: true,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +75,8 @@ class Home extends StatelessWidget {
             Container(
               height: 100,
               width: double.infinity,
-              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 35.0),
+              padding:
+                  const EdgeInsets.only(left: 16.0, right: 16.0, top: 35.0),
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [Color(0xff452C63), Color(0xff3D2C8D)],
@@ -46,25 +97,13 @@ class Home extends StatelessWidget {
               child: ListView(
                 children: [
                   ListTile(
-                    leading: Image.asset(
-                      'assets/robot.png',
-                      width: 24,
-                      height: 24,
-                    ),
-                    title: const Text('Chatbot'),
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => SkinDiagnosisChatBot(
-                            userName: userName,
-                            userID: userID,
-                            sessionID: '',
-                          ),
-                        ),
-                      );
-                    },
-
-                  ),
+                      leading: Image.asset(
+                        'assets/robot.png',
+                        width: 24,
+                        height: 24,
+                      ),
+                      title: const Text('Chatbot'),
+                      onTap: () => handleGetStarted(context)),
                   ListTile(
                     leading: Image.asset(
                       'assets/about-us-icon.png',
@@ -75,13 +114,12 @@ class Home extends StatelessWidget {
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) =>AboutUsPage(
-                            userName: userName, // Pass the userName
-                            userID: userID, )
-                        ),
+                            builder: (context) => AboutUsPage(
+                                  userName: userName, // Pass the userName
+                                  userID: userID,
+                                )),
                       );
                     },
-
                   ),
                 ],
               ),
@@ -101,7 +139,7 @@ class Home extends StatelessWidget {
                     await AuthServices().signOut();
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
+                        builder: (context) => const WelcomeScreen(),
                       ),
                     );
                   } catch (e) {
@@ -170,18 +208,6 @@ class Home extends StatelessWidget {
                             ),
                           ),
                         ),
-                        // IconButton(
-                        //   onPressed: () async {
-                        //     await AuthServices().signOut();
-                        //     Navigator.of(context).pushReplacement(
-                        //       MaterialPageRoute(
-                        //         builder: (context) => const LoginScreen(),
-                        //       ),
-                        //     );
-                        //   },
-                        //   icon: const Icon(Icons.exit_to_app, color: Colors.red),
-                        //   tooltip: 'Logout',
-                        // ),
                       ],
                     ),
                     const SizedBox(height: 50),
@@ -220,30 +246,7 @@ class Home extends StatelessWidget {
               children: [
                 CustomButton(
                   text: "Get Started",
-                  onTap: () async {
-                    String sessionID = DateTime.now().millisecondsSinceEpoch.toString();
-
-                    await FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(userID)
-                        .collection('chats')
-                        .doc(sessionID)
-                        .set({
-                      'createdAt': FieldValue.serverTimestamp(),
-                      'sessionID': sessionID,
-                      'status': 'active',
-                    });
-
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => SkinDiagnosisChatBot(
-                          userName: userName,
-                          userID: userID,
-                          sessionID: sessionID,
-                        ),
-                      ),
-                    );
-                  },
+                  onTap: () => handleGetStarted(context),
                 ),
                 const SizedBox(height: 20),
               ],
