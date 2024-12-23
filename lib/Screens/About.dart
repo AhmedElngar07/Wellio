@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:wellio/Screens/Home.dart';
 import 'package:wellio/Screens/Welcome.dart';
-import 'package:wellio/Screens/newChatbot.dart';
 import 'package:wellio/Services/Authentication.dart';
+import 'package:wellio/Services/sessionGenerate.dart';
 
 class AboutUsPage extends StatelessWidget {
   final String userName;
@@ -11,6 +11,14 @@ class AboutUsPage extends StatelessWidget {
   // Constructor to pass the userName and userID
   AboutUsPage({Key? key, required this.userName, required this.userID})
       : super(key: key);
+
+  void chatBot(BuildContext context) {
+    ChatServices.startNewChatSession(
+      context: context,
+      userID: userID,
+      userName: userName,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +37,8 @@ class AboutUsPage extends StatelessWidget {
             backgroundColor: Colors.transparent,
             elevation: 0,
             iconTheme: IconThemeData(color: Colors.white),
-            title: const Text('About Us', style: TextStyle(color: Colors.white)),
+            title:
+                const Text('About Us', style: TextStyle(color: Colors.white)),
           ),
         ),
       ),
@@ -64,17 +73,7 @@ class AboutUsPage extends StatelessWidget {
                       height: 24,
                     ),
                     title: Text('Chatbot'),
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => SkinDiagnosisChatBot(
-                            userName: userName,
-                            userID: userID,
-                            sessionID: '',
-                          ),
-                        ),
-                      );
-                    },
+                    onTap: () => chatBot(context),
                   ),
                   ListTile(
                     leading: Image.asset(
@@ -88,7 +87,7 @@ class AboutUsPage extends StatelessWidget {
                         MaterialPageRoute(
                           builder: (context) => Home(
                             userName: userName, // Pass the userName
-                            userID: userID,     // Pass the userID
+                            userID: userID, // Pass the userID
                           ),
                         ),
                       );
@@ -151,8 +150,8 @@ class AboutUsPage extends StatelessWidget {
                 SizedBox(height: 16),
                 Text(
                   'Welcome to our app! We are here to help you take control of your skin health. '
-                      'Our AI-powered app analyzes skin images to provide potential diagnoses and recommendations. '
-                      'It is a convenient and accessible way to get initial insights and decide if further medical attention is needed.',
+                  'Our AI-powered app analyzes skin images to provide potential diagnoses and recommendations. '
+                  'It is a convenient and accessible way to get initial insights and decide if further medical attention is needed.',
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.white,

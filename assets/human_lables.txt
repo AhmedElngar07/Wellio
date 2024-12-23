@@ -1,0 +1,39 @@
+person
+face
+skin
+body part
+hand
+arm
+leg
+foot
+head
+eye
+nose
+mouth
+hair
+finger
+toe
+neck
+chest
+back
+shoulder
+knee
+elbow
+wrist
+ankle
+hip
+waist
+torso
+facial feature
+body
+human
+skin condition
+rash
+mole
+acne
+scar
+wound
+bruise
+cut
+burn
+blister

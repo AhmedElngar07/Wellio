@@ -1,13 +1,9 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:wellio/Screens/About.dart';
 import 'package:wellio/Screens/Welcome.dart';
-import 'package:wellio/Screens/newChatbot.dart';
 import 'package:wellio/Services/Authentication.dart';
-import 'package:wellio/Services/timeException.dart';
+import 'package:wellio/Services/sessionGenerate.dart';
 import 'package:wellio/Widgets/buttom.dart';
 
 class Home extends StatelessWidget {
@@ -16,51 +12,12 @@ class Home extends StatelessWidget {
 
   const Home({super.key, required this.userName, required this.userID});
 
-  Future<void> handleGetStarted(BuildContext context) async {
-    try {
-      // Show loading state
-      EasyLoading.show(status: 'Loading...');
-
-      String sessionID = DateTime.now().millisecondsSinceEpoch.toString();
-
-      // Attempt Firestore operation with timeout
-      await Future.any([
-        FirebaseFirestore.instance
-            .collection('users')
-            .doc(userID)
-            .collection('chats')
-            .doc(sessionID)
-            .set({
-          'createdAt': FieldValue.serverTimestamp(),
-          'sessionID': sessionID,
-          'status': 'active',
-        }),
-        Future.delayed(const Duration(seconds: 10))
-            .then((_) => throw TimeoutException('Operation timed out')),
-      ]);
-
-      EasyLoading.dismiss();
-
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => SkinDiagnosisChatBot(
-            userName: userName,
-            userID: userID,
-            sessionID: sessionID,
-          ),
-        ),
-      );
-    } catch (e) {
-      EasyLoading.dismiss();
-      await Future.delayed(const Duration(
-          milliseconds: 100)); // Small delay to ensure dismiss completes
-      EasyLoading.showError(
-        'Connection error. Please check your internet connection.',
-        duration: const Duration(seconds: 2),
-        maskType: EasyLoadingMaskType.black,
-        dismissOnTap: true,
-      );
-    }
+  void handleGetStarted(BuildContext context) {
+    ChatServices.startNewChatSession(
+      context: context,
+      userID: userID,
+      userName: userName,
+    );
   }
 
   @override
