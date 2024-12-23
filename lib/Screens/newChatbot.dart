@@ -149,7 +149,7 @@ class _SkinDiagnosisChatBotState extends State<SkinDiagnosisChatBot> {
             await getDiseaseExplanationFromGemini(predictedLabel);
 
         String diagnosis =
-            "I've detected: $predictedLabel\nConfidence: ${(confidence * 100).toStringAsFixed(2)}%\n\n$briefExplanation\n\nFeel free to ask if you have any questions. I'm here to help.";
+            "I've detected: $predictedLabel\nConfidence: ${(confidence * 100).toStringAsFixed(2)}%\n\n$briefExplanation\n\nAll the attached answers may be right or wrong, so please consult a specialist doctor.\n\nFeel free to ask if you have any questions. I'm here to help  ";
 
         setState(() {
           prompt.add(ModelMessage(
